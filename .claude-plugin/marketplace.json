@@ -1,18 +1,18 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace-manifest.json",
-  "name": "humanizer",
+  "name": "humanizer-pt-br",
   "owner": {
-    "name": "blader",
-    "url": "https://github.com/blader"
+    "name": "Roberto Rosmaninho",
+    "url": "https://github.com/Robertorosmaninho"
   },
-  "description": "The humanizer skill, installable as a Claude Code plugin.",
+  "description": "Skill de humanização para português brasileiro, instalável como plugin do Claude Code.",
   "plugins": [
     {
-      "name": "humanizer",
+      "name": "humanizer-pt-br",
       "source": "./",
-      "description": "Remove signs of AI-generated writing from text, making it sound more natural and human. Based on Wikipedia's \"Signs of AI writing\" guide.",
+      "description": "Remove marcas de texto gerado por IA e reescreva em português brasileiro natural.",
       "license": "MIT",
-      "keywords": ["writing", "editing", "ai-detection", "humanize", "prose", "style"]
+      "keywords": ["writing", "editing", "ai-detection", "humanize", "portuguese", "pt-br", "prose", "style"]
     }
   ]
 }

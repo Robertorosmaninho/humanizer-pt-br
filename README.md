@@ -1,213 +1,218 @@
-# Humanizer
+# Humanizer pt-BR
 
-A portable agent skill that removes signs of AI-generated writing from text, making it sound more natural and human. It is plain Markdown, so it can run in any harness that supports skill-style instructions.
+Skill portátil para remover marcas recorrentes de texto gerado por IA e reescrever o conteúdo em português brasileiro natural. A adaptação preserva sentido, cobertura, registro e voz autoral. Não é uma tradução palavra por palavra do Humanizer em inglês: os critérios foram revistos para a sintaxe, a ortografia, os registros e a variação do português do Brasil.
 
-## Installation
+O runtime é apenas o arquivo `SKILL.md`, em Markdown. Qualquer agente capaz de carregar instruções de skill pode usá-lo.
+
+## Instalação
 
 ### Skills CLI
 
-Install with the cross-agent skills CLI:
+```bash
+npx skills add Robertorosmaninho/humanizer-pt-br
+```
+
+Para atualizar uma instalação existente:
 
 ```bash
-npx skills add blader/humanizer
+npx skills update humanizer-pt-br
 ```
 
-Update an existing install:
+Para instalar em todos os agentes configurados:
 
 ```bash
-npx skills update humanizer
+npx skills add Robertorosmaninho/humanizer-pt-br --agent '*'
 ```
 
-To install into every supported agent harness:
+Para escolher um agente:
 
 ```bash
-npx skills add blader/humanizer --agent '*'
+npx skills add Robertorosmaninho/humanizer-pt-br --agent <nome-do-agente>
 ```
 
-To target one configured harness, pass its agent name:
+### Plugin do Claude Code
+
+```text
+/plugin marketplace add Robertorosmaninho/humanizer-pt-br
+/plugin install humanizer-pt-br@humanizer-pt-br
+```
+
+O comando da skill passa a ser `/humanizer-pt-br:humanizer-pt-br`.
+
+### Instalação manual
 
 ```bash
-npx skills add blader/humanizer --agent <agent-name>
+git clone https://github.com/Robertorosmaninho/humanizer-pt-br.git /caminho/para/skills/humanizer-pt-br
 ```
 
-### Claude Code plugin
-
-Claude Code users can also install Humanizer as a plugin:
-
-```
-/plugin marketplace add blader/humanizer
-/plugin install humanizer@humanizer
-```
-
-The skill is then invoked as `/humanizer:humanizer`.
-
-### Manual
-
-Any agent harness can use the skill directly because the runtime artifact is `SKILL.md`. Install it wherever your harness expects skill directories, or copy `SKILL.md` into an existing skill folder.
-
-For example:
+Ou copie apenas o runtime:
 
 ```bash
-git clone https://github.com/blader/humanizer.git /path/to/your/skills/humanizer
+mkdir -p /caminho/para/skills/humanizer-pt-br
+cp SKILL.md /caminho/para/skills/humanizer-pt-br/
 ```
 
-Or, if you already have this repo cloned:
+## Uso
 
-```bash
-mkdir -p /path/to/your/skills/humanizer
-cp SKILL.md /path/to/your/skills/humanizer/
+Invoque a skill conforme o mecanismo do seu agente:
+
+```text
+/humanizer-pt-br
+
+[cole aqui o texto em português brasileiro]
 ```
 
-## Usage
+Também funciona como pedido direto:
 
-Invoke the skill however your agent harness exposes installed skills. Common forms include a slash command or a direct request:
-
-```
-/humanizer
-
-[paste your text here]
+```text
+Humanize este texto em português brasileiro: [texto]
 ```
 
-```
-Please humanize this text: [your text]
-```
+### Calibração de voz
 
-### Voice Calibration
+Forneça dois ou três parágrafos escritos pela própria pessoa quando quiser preservar seu ritmo, vocabulário, pontuação, regionalismos e escolhas como `tu`/`você` ou `nós`/`a gente`:
 
-To match your personal writing style, provide a sample of your own writing:
+```text
+Use esta amostra para calibrar minha voz:
+[amostra]
 
-```
-/humanizer
-
-Here's a sample of my writing for voice matching:
-[paste 2-3 paragraphs of your own writing]
-
-Now humanize this text:
-[paste AI text to humanize]
+Agora humanize este texto:
+[texto]
 ```
 
-The skill will analyze your sentence rhythm, word choices, and quirks, then apply them to the rewrite instead of producing generic "clean" output.
+A skill não injeta `pra`, `né`, gírias ou diminutivos para fingir espontaneidade. Ela também não europeíza colocação pronominal nem uniformiza variedades regionais sem pedido.
 
-## Overview
+## Como a adaptação pt-BR funciona
 
-Based on [Wikipedia's "Signs of AI writing"](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) guide, maintained by WikiProject AI Cleanup. This comprehensive guide comes from observations of thousands of instances of AI-generated text.
+A versão mantém a arquitetura original de 33 padrões, além do ciclo rascunho, auditoria e versão final. Cinco regras exigiram mudanças estruturais, não tradução literal:
 
-The skill also includes a final "obviously AI generated" audit pass and a second rewrite, to catch lingering AI-isms in the first draft.
+- o gerúndio é legítimo em pt-BR; o padrão 3 mira gerúndios que fingem análise;
+- sujeito oculto, oração impessoal e `se` são naturais; o padrão 13 mira passiva burocrática, nominalização e apagamento relevante do agente;
+- travessões são comuns em diálogos e na prosa brasileira; o padrão 14 corta o excesso parentético, não todo travessão;
+- aspas tipográficas não são um sinal útil; o padrão 19 agora detecta calques e sintaxe traduzida do inglês;
+- hífen não é uma preferência estilística em português; o padrão 26 aplica a ortografia brasileira e remove compostos artificiais importados do inglês.
 
-### Key Insight from Wikipedia
+O texto só deve ser marcado quando houver um conjunto de sinais. Uma palavra formal, um travessão, um emoji ou uma frase curta isolada não provam uso de IA.
 
-> "LLMs use statistical algorithms to guess what should come next. The result tends toward the most statistically likely result that applies to the widest variety of cases."
+## 33 padrões detectados
 
-## 33 Patterns Detected (with Before/After Examples)
+### Conteúdo
 
-### Content Patterns
+| # | Padrão | Antes | Depois |
+|---|---|---|---|
+| 1 | **Importância e legado inflados** | "representou um marco decisivo na evolução cultural" | Dizer o que abriu, mudou ou passou a atender |
+| 2 | **Notoriedade sem contexto** | Lista de jornais, canais e seguidores | Citar uma declaração ou fato relevante |
+| 3 | **Gerúndios de análise superficial** | "refletindo... simbolizando... destacando..." | Informar agente, causa ou fonte |
+| 4 | **Linguagem promocional** | "experiência única no coração da serra" | Descrever localização e características verificáveis |
+| 5 | **Atribuições vagas** | "especialistas acreditam" | Nomear a fonte; sem fonte, retirar a alegação ou explicitar a lacuna |
+| 6 | **Desafios e perspectivas formulaicos** | "apesar dos desafios, segue rumo a um futuro promissor" | Explicar problemas, datas e ações concretas |
 
-| # | Pattern | Before | After |
-|---|---------|--------|-------|
-| 1 | **Significance inflation** | "marking a pivotal moment in the evolution of..." | "was established in 1989 to collect regional statistics" |
-| 2 | **Notability name-dropping** | "cited in NYT, BBC, FT, and The Hindu" | "In a 2024 NYT interview, she argued..." |
-| 3 | **Superficial -ing analyses** | "symbolizing... reflecting... showcasing..." | Remove or expand with actual sources |
-| 4 | **Promotional language** | "nestled within the breathtaking region" | "is a town in the Gonder region" |
-| 5 | **Vague attributions** | "Experts believe it plays a crucial role" | "according to a 2019 survey by..." |
-| 6 | **Formulaic challenges** | "Despite challenges... continues to thrive" | Specific facts about actual challenges |
+### Linguagem e gramática
 
-### Language Patterns
+| # | Padrão | Antes | Depois |
+|---|---|---|---|
+| 7 | **Vocabulário de IA acumulado** | "solução robusta que potencializa a jornada" | Explicar o que o sistema faz |
+| 8 | **Fuga de ser, estar e ter** | "configura-se como", "atua como", "conta com" | "é", "está", "tem" quando forem mais claros |
+| 9 | **Paralelismos negativos e slogans** | "não é só X, é Y", "sem achismo" | Afirmar o ponto diretamente |
+| 10 | **Regra de três** | "inovação, inspiração e conexão" | Usar a quantidade real de itens |
+| 11 | **Rodízio de sinônimos** | "pesquisadora, cientista, especialista, acadêmica" | Repetir o termo mais claro |
+| 12 | **Falsos intervalos** | "do samba à arquitetura, passando pela culinária" | Listar tópicos sem escala inventada |
+| 13 | **Passiva burocrática e agente apagado** | "foi realizada a análise" | "a equipe analisou" quando o agente importar |
 
-| # | Pattern | Before | After |
-|---|---------|--------|-------|
-| 7 | **AI vocabulary** | "Actually... additionally... testament... landscape... showcasing" | "also... remain common" |
-| 8 | **Copula avoidance** | "serves as... features... boasts" | "is... has" |
-| 9 | **Negative parallelisms / tailing negations** | "It's not just X, it's Y", "..., no guessing" | State the point directly |
-| 10 | **Rule of three** | "innovation, inspiration, and insights" | Use natural number of items |
-| 11 | **Synonym cycling** | "protagonist... main character... central figure... hero" | "protagonist" (repeat when clearest) |
-| 12 | **False ranges** | "from the Big Bang to dark matter" | List topics directly |
-| 13 | **Passive voice / subjectless fragments** | "No configuration file needed" | Name the actor when it helps clarity |
+### Estilo
 
-### Style Patterns
+| # | Padrão | Antes | Depois |
+|---|---|---|---|
+| 14 | **Travessões parentéticos em excesso** | Vários apartes entre travessões | Reestruturar; preservar diálogo e usos autorais |
+| 15 | **Negrito em série** | "**OKRs**, **KPIs**, **metas**" | Destacar apenas o que precisa de ênfase |
+| 16 | **Listas com minitítulos** | "**Desempenho:** O desempenho..." | Prosa, tabela ou lista sem repetição |
+| 17 | **Maiúsculas de título** | "Negociações Estratégicas e Parcerias Globais" | "Negociações estratégicas e parcerias globais" |
+| 18 | **Emojis decorativos** | "🚀 Lançamento; ✅ Próximos passos" | Remover quando não fizerem parte da voz |
+| 19 | **Calques do inglês** | "endereçar dores e entregar experiência sem fricção" | Usar colocação e regência naturais em pt-BR |
 
-| # | Pattern | Before | After |
-|---|---------|--------|-------|
-| 14 | **Em/en dashes** | "institutions—not the people—yet this continues—" | Cut them: periods, commas, colons, or parentheses |
-| 15 | **Boldface overuse** | "**OKRs**, **KPIs**, **BMC**" | "OKRs, KPIs, BMC" |
-| 16 | **Inline-header lists** | "**Performance:** Performance improved" | Convert to prose |
-| 17 | **Title Case Headings** | "Strategic Negotiations And Partnerships" | "Strategic negotiations and partnerships" |
-| 18 | **Emojis** | "🚀 Launch Phase: 💡 Key Insight:" | Remove emojis |
-| 19 | **Curly quotes** | `said “the project”` | `said “the project”` |
-| 26 | **Hyphenated word pairs** | “cross-functional, data-driven, client-facing” | Drop hyphens on common word pairs |
-| 27 | **Persuasive authority tropes** | "At its core, what matters is..." | State the point directly |
-| 28 | **Signposting announcements** | "Let's dive in", "Here's what you need to know" | Start with the content |
-| 29 | **Fragmented headers** | "## Performance" + "Speed matters." | Let the heading do the work |
-| 30 | **Diff-anchored writing** | "This function was added to replace..." | Describe what it does, not what changed |
-| 31 | **Manufactured punchlines / staccato drama** | "It had no preference. No prior. No nostalgia." | Use varied sentence lengths and concrete claims |
-| 32 | **Aphorism formulas** | "Symmetry is the language of trust" | Replace the formula with the actual claim |
-| 33 | **Conversational rhetorical openers** | "Honestly? It depends..." | Remove the fake-candid setup |
+### Comunicação
 
-### Communication Patterns
+| # | Padrão | Antes | Depois |
+|---|---|---|---|
+| 20 | **Restos de conversa com chatbot** | "Espero que ajude. Quer que eu continue?" | Retirar do conteúdo |
+| 21 | **Corte de conhecimento e especulação** | "há poucos dados; provavelmente cresceu..." | Dizer apenas o que as fontes informam |
+| 22 | **Tom bajulador** | "Excelente pergunta! Você está certíssimo!" | Responder diretamente |
 
-| # | Pattern | Before | After |
-|---|---------|--------|-------|
-| 20 | **Chatbot artifacts** | "I hope this helps! Let me know if..." | Remove entirely |
-| 21 | **Cutoff disclaimers** | "While details are limited in available sources..." | Find sources or remove |
-| 22 | **Sycophantic tone** | "Great question! You're absolutely right!" | Respond directly |
+### Enchimento e cadência
 
-### Filler and Hedging
+| # | Padrão | Antes | Depois |
+|---|---|---|---|
+| 23 | **Enchimento e metadiscurso** | "é importante destacar que" | Começar pela informação |
+| 24 | **Atenuação excessiva** | "poderia potencialmente talvez" | "pode" ou a ressalva necessária |
+| 25 | **Conclusão positiva genérica** | "futuro promissor e novos patamares" | Informar próximo passo, prazo ou fato |
+| 26 | **Hifenização importada** | "centrado-no-cliente", "tempo-real" | "centrado no cliente", "tempo real" |
+| 27 | **Falsa autoridade** | "a verdadeira questão", "em sua essência" | Apresentar o argumento sem cerimônia |
+| 28 | **Anúncio da explicação** | "vamos mergulhar", "a seguir veremos" | Começar pela explicação |
+| 29 | **Cabeçalho repetido** | `## Desempenho` + "Desempenho é fundamental" | Deixar o título cumprir sua função |
+| 30 | **Texto ancorado no diff** | "esta função foi adicionada para substituir" | Descrever o comportamento atual |
+| 31 | **Drama em frases curtas** | "Sem medo. Sem ruído. Sem concessões." | Variar o ritmo e apresentar fatos |
+| 32 | **Fórmula de aforismo** | "simetria é a linguagem da confiança" | Explicar a relação concreta |
+| 33 | **Falsa intimidade retórica** | "Sinceramente? A verdade é a seguinte..." | Dizer a observação diretamente |
 
-| # | Pattern | Before | After |
-|---|---------|--------|-------|
-| 23 | **Filler phrases** | "In order to", "Due to the fact that" | "To", "Because" |
-| 24 | **Excessive hedging** | "could potentially possibly" | "may" |
-| 25 | **Generic conclusions** | "The future looks bright" | Specific plans or facts |
+## Exemplo
 
-## Full Example
+**Antes:**
 
-**Before (AI-sounding):**
-> I recently spent five unforgettable days in Lisbon, and let me tell you — this city completely stole my heart. From the moment I arrived, I knew I was somewhere truly special.
+> Passei cinco dias inesquecíveis em Salvador e preciso dizer: essa cidade roubou meu coração! Banhada pela Baía de Todos-os-Santos, Salvador se apresenta como um testemunho vibrante da rica história brasileira, onde tradição, cultura e modernidade se entrelaçam de forma única.
 >
-> Nestled along the banks of the Tagus River, Lisbon stands as a vibrant testament to Portugal's enduring spirit, where rich history and modern energy intertwine at every turn. Yes, the famous hills are challenging — my legs certainly felt it! — but every climb rewards you with breathtaking, panoramic views that make it all worthwhile.
+> Nenhuma visita estaria completa sem conhecer o icônico Pelourinho e mergulhar em sua energia contagiante. E a comida? Simplesmente divina. Cada acarajé representa uma celebração de sabores, destacando a diversidade cultural que torna a Bahia tão singular.
 >
-> No trip would be complete without riding the iconic Tram 28, winding through the city's most historic neighborhoods. And the food? Simply divine. The original pastéis de nata at Pastéis de Belém are a beloved national treasure, and savoring one still warm was a moment I will never forget.
->
-> But what truly makes Lisbon special isn't just the sights — it's the feeling. Wander a few steps off the main squares and you'll discover a quieter, more authentic side: sun-drenched alleys, charming tiled facades, and friendly locals going about their daily lives, inviting you to slow down and savor every moment.
->
-> Of course, the must-see São Jorge Castle offers stunning views over the rooftops below. The queues can be long, but the experience is absolutely worth it for any history buff or curious traveler.
->
-> Would I go back? Absolutely. Lisbon isn't just a place to visit — it's a place to fall in love with, again and again. If you're dreaming of your next getaway, this is one destination that promises memories to last a lifetime. ✨
+> Eu voltaria? Com certeza! Salvador não é apenas um destino, mas um lugar para sentir, viver e amar. Prepare-se para uma experiência que ficará para sempre no coração. ✨
 
-**After (Humanized):**
-> I spent five days in Lisbon last October and still have mixed feelings about it. Beautiful, yes. Also harder on the knees than anyone warned me.
->
-> The hills are the whole story and somehow never make the brochures. My hotel was up in Alfama, which photographs beautifully and translates, in practice, to climbing what felt like a six-story staircase every time I wanted coffee. By the second day my calves had opinions. I started planning each walk around which way was downhill, which is a strange way to see a city but probably an honest one.
->
-> Everyone says to ride Tram 28, so I did, wedged against a stranger's backpack for forty minutes while three tour groups filmed the same corner. I would walk the route next time, or go before breakfast. The custard tarts, though, earn the fuss. I had one at a plain little place in Graça, still warm, and for about thirty seconds I understood why people build trips around pastry.
->
-> What I did not expect was how quiet the city gets away from the main squares. Two blocks uphill from any plaza it turns into laundry lines, chipped tile, open windows, and old men watching football with the sound turned up. That is the Lisbon I keep thinking about, not the castle.
->
-> The castle is fine. The view is great, the queue is long, and I spent more time shuffling toward the entrance than looking at anything once I got inside. If I had only two days, I would trade it for an afternoon of getting lost.
->
-> I would go back, but in spring and with better shoes. Lisbon does not bend over backward to make things easy for you. I think I liked that, even when my legs disagreed.
+**Depois:**
 
-## References
+> Passei cinco dias em Salvador em janeiro e voltei com duas certezas: gostei muito da cidade e escolhi a pior semana possível para descobrir que não lido bem com calor. Eu sabia que faria calor, claro. Só não tinha entendido que, às dez da manhã, minha camisa já pareceria ter atravessado uma tempestade.
+>
+> Fiquei perto do centro histórico, o que ajudou em parte. Também significou subir ladeiras todos os dias e aprender rápido quais trajetos valiam um carro. O Pelourinho estava tão cheio na primeira tarde que mal consegui prestar atenção nos prédios. Voltei cedo dois dias depois. Com as lojas ainda abrindo e menos gente disputando a calçada, o lugar finalmente fez sentido para mim.
+>
+> Comi acarajé duas vezes. O primeiro exigiu quarenta minutos de fila e chegou morno. O segundo veio de um tabuleiro perto do hotel, sem placa famosa nem discurso, e estava muito melhor. Foi uma boa lembrança de que roteiro gastronômico também erra.
+>
+> Eu voltaria, de preferência num mês menos quente e com mais dois dias livres. Não porque a cidade tenha "roubado meu coração", mas porque saí com a sensação incômoda de ter entendido só uma parte dela.
 
-- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) - Primary source
-- [WikiProject AI Cleanup](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_AI_Cleanup) - Maintaining organization
+O exemplo completo, com o rascunho e a auditoria intermediária, está em `SKILL.md`.
 
-## Version History
+## Base linguística e licenças
 
-- **2.8.2** - Replaced the full before/after example with a first-person Lisbon trip recap. The after now keeps the same topic, perspective, and rough length as the before while removing the AI tells without becoming clipped or slogan-like. No change to the 33 patterns.
-- **2.8.1** - Added cross-agent installation docs, optional Claude Code plugin packaging, and a compact secondhand-text false-positive guard. No change to the 33 patterns.
-- **2.8.0** - Added style/cadence patterns #31-33 for manufactured punchlines, aphorism formulas, and conversational rhetorical openers; expanded #20 to catch offer-to-continue chatbot closers. 33 patterns total.
-- **2.7.0** - Added pattern #30 (diff-anchored writing); made em/en dashes a hard cut rather than "overuse"; expanded #21 to cover speculative gap-filling ("maintains a low profile"). 30 patterns total.
-- **2.6.0** - Cleanup pass: consolidated the duplicated workflow sections, gated the personality guidance to content where voice is wanted, removed the model-fingerprinting subsection, and condensed the worked example. No change to the 29 patterns.
-- **2.5.1** - Added a passive-voice / subjectless-fragment rule, raising the total to 29 patterns
-- **2.5.0** - Added patterns for persuasive framing, signposting, and fragmented headers; expanded negative parallelisms to cover tailing negations; tightened wording around em dash overuse; fixed frontmatter wording to use "filler phrases"
-- **2.4.0** - Added voice calibration: match the user's personal writing style from samples
-- **2.3.0** - Added pattern #25: hyphenated word pair overuse
-- **2.2.0** - Added a final "obviously AI generated" audit + second-pass rewrite prompts
-- **2.1.1** - Fixed pattern #18 example (curly quotes vs straight quotes)
-- **2.1.0** - Added before/after examples for all 24 patterns
-- **2.0.0** - Complete rewrite based on raw Wikipedia article content
-- **1.0.0** - Initial release
+| Fonte | Uso nesta adaptação | Observação |
+|---|---|---|
+| [VOLP, Academia Brasileira de Letras](https://www.academia.org.br/nossa-lingua/vocabulario-ortografico) | Autoridade de grafia e classe gramatical | A edição digital 2025-2026 informa mais de 380 mil entradas e atenção à variedade brasileira |
+| [VERO/LibreOffice pt-BR](https://github.com/LibreOffice/dictionaries/tree/master/pt_BR) | Léxico Hunspell para conferência ortográfica | Dicionário livre sob LGPLv3/MPL; usado como ferramenta de pesquisa, não incluído no runtime Markdown |
+| [PortiLexicon-UD, NILC/ICMC-USP](https://portilexicon.icmc.usp.br/) | Formas, lemas, classes e traços morfológicos | Mais de 1,2 milhão de entradas; CC BY 4.0 |
+| [Corpus Carolina, USP](https://sites.usp.br/corpuscarolina/corpus/) | Uso contemporâneo em contexto e contraste de gêneros | Cada documento tem procedência e licença próprias; o cabeçalho do corpus usa CC BY-NC-SA 4.0 |
+| [Portal Domínio Público, MEC](https://dominiopublico.mec.gov.br/) | Ritmo literário e história do português brasileiro | Obras antigas não servem, sozinhas, como modelo de prosa contemporânea |
+| [Agência Brasil](https://agenciabrasil.ebc.com.br/sobre) | Referência pontual de prosa jornalística atual | A política vigente permite reprodução jornalística com crédito e pede contato para usos comerciais; o conteúdo não foi incorporado ao repositório |
 
-## License
+O dicionário VERO usado na pesquisa tem 312.368 entradas de base e regras Hunspell de flexão. Ele ficou fora do repositório porque o produto deve continuar portátil e inteiramente baseado em Markdown. Ortografia, frequência e naturalidade são problemas diferentes: o VOLP e o VERO confirmam formas; o PortiLexicon descreve morfologia; corpora mostram uso; a decisão editorial ainda depende de contexto e registro.
+
+## Referências
+
+- [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing), taxonomia de partida
+- [WikiProject AI Cleanup](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_AI_Cleanup), projeto que mantém o guia
+- [Humanizer original](https://github.com/blader/humanizer), base da arquitetura, do fluxo e da numeração inicial
+
+## Histórico de versões
+
+- **3.0.0** - Primeira adaptação integral para português brasileiro. Preserva os 33 números, mas reescreve instruções, listas e exemplos em pt-BR; adiciona calibração de variedade e registro; impede a fabricação de oralidade; adapta gerúndios e passivas; deixa de proibir travessões legítimos; substitui a regra de aspas curvas por calques do inglês; troca a regra inglesa de compostos pela hifenização brasileira; e exige que atribuições vagas sejam resolvidas ou assumidas como lacuna, nunca apenas repetidas após a auditoria. A mudança é estrutural porque uma tradução literal produziria correções erradas em sujeito oculto, colocação pronominal, pontuação e compostos.
+- **2.8.2** - Versão-base em inglês: novo exemplo completo em primeira pessoa, mantendo tema, perspectiva e extensão aproximada.
+- **2.8.1** - Documentação de instalação entre agentes, empacotamento opcional para Claude Code e proteção contra falsos positivos em texto citado.
+- **2.8.0** - Padrões 31 a 33 para punchlines fabricadas, fórmulas de aforismo e aberturas retóricas. Total: 33 padrões.
+- **2.7.0** - Padrão 30, corte rígido de travessões na versão inglesa e ampliação do preenchimento especulativo. Total: 30 padrões.
+- **2.6.0** - Consolidação do fluxo e limitação da orientação de personalidade aos gêneros adequados. Sem mudança na contagem.
+- **2.5.1** - Regra de voz passiva e fragmentos sem sujeito. Total: 29 padrões.
+- **2.5.0** - Novos padrões de autoridade persuasiva, metadiscurso e cabeçalhos fragmentados.
+- **2.4.0** - Calibração opcional pela amostra de voz do usuário.
+- **2.3.0** - Regra inglesa de compostos hifenizados.
+- **2.2.0** - Auditoria "ainda parece IA" e segunda reescrita.
+- **2.1.1** - Correção do exemplo de aspas curvas e retas.
+- **2.1.0** - Exemplos antes/depois para os 24 padrões então existentes.
+- **2.0.0** - Reescrita com base no guia da Wikipédia.
+- **1.0.0** - Lançamento inicial.
+
+## Licença
 
 MIT
